@@ -1,11 +1,10 @@
-# coconuts é uma lista de cocos que cada macaco possui
+import os
+import sys
+
+
+rounds: int = 0
 coconuts: list[list[int]] = []
-coconuts.append([178,84,1,111,159,22,54,132,201,51,44]) 
-coconuts.append([80,82,10,83,98,31,56,84,53])
-coconuts.append([65,194,35,132,191,202,62])
-coconuts.append([121,10,162])
-coconuts.append([16,110,125,113,35])
-coconuts.append([120,25,20,134,166,100,157,159])
+exchanges: list[tuple[int, int, int]] = []
 
 
 # distribui os cocos conforme a quantidade de pedras de acordo com os macacos indicados
@@ -15,18 +14,43 @@ def exchange_coconuts(monkey: int, even_monkey: int, odd_monkey: int):
     coconuts[monkey] = []
 
 
-# pega o indice do macaco e faz as trocas
-def main():
-    rounds: int = 100_000 #quantas vezes vai rodar
-    exchanges: list[tuple[int, int, int]] = [(0,4,3), (1,0,5), (2,3,4), (3,0,4), (4,0,5), (5,2,0)] * rounds
-    
+def main():    
     # [0] macaco que distribui cocos, [1] macaco que vai receber os pares, [3] macaco que vai receber os impares
-    for _, exchange in enumerate(exchanges):
-        exchange_coconuts(exchange[0], exchange[1], exchange[2])
+    for round in range(rounds):
+        monkey = round % len(exchanges) # [0 - 5] modulo acessa o index
+        even_monkey, odd_monkey = exchanges[monkey]
+        exchange_coconuts(monkey, even_monkey, odd_monkey)
 
 
 if __name__ == "__main__":
-    main()
-    for monkey, _coconuts in enumerate(coconuts):
-        #num do macaco e a lista de pedrinhas
-        print(monkey, _coconuts)
+    test_cases_folder_path: str = sys.argv[1] #le o diretorio de casos de teste da linha de comando
+    for test_case in os.listdir(test_cases_folder_path): # lista os arq do diretorio
+        with open(test_cases_folder_path + "\\" + test_case, "r") as file: #juntando o caminho do diretorio mais o nome do arq
+            for line in file:
+                aux = line.strip().split(' ') #splitando por espaço
+                
+                if "Fazer" in line:
+                    rounds = int(aux[1])
+                    continue
+                
+                even_monkey = int(aux[aux.index('par') + 2])
+                odd_monkey = int(aux[aux.index('impar') + 2])
+                exchanges.append([even_monkey, odd_monkey])
+                
+                _coconuts = [int(rocks) for rocks in aux[aux.index(':') + 3:]]
+                coconuts.append(_coconuts)
+    
+        main()
+        winner_monkey = 0
+        _max = 0
+        for monkey, _coconuts in enumerate(coconuts):
+            if _max < len(_coconuts):
+                _max = len(_coconuts)
+                winner_monkey = monkey
+            
+        with open("resultados.txt", "a") as file:
+            file.write(f"Rodadas {rounds} -> Macaco {winner_monkey} : {_max}\n")
+
+        rounds = 0
+        coconuts = []
+        exchanges = []
