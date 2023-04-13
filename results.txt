@@ -1,0 +1,8 @@
+Rodadas 5000 -> Macaco 19 : 4960
+Rodadas 10000 -> Macaco 75 : 6535
+Rodadas 20000 -> Macaco 15 : 30576
+Rodadas 40000 -> Macaco 70 : 112109
+Rodadas 60000 -> Macaco 17 : 113028
+Rodadas 80000 -> Macaco 578 : 473754
+Rodadas 90000 -> Macaco 48 : 251176
+Rodadas 100000 -> Macaco 649 : 1126859
